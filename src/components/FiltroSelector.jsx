@@ -1,3 +1,7 @@
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
 import { useState } from "react";
 import { Box, FormControl, InputLabel, Select, MenuItem, Typography, TextField } from "@mui/material";
 
@@ -15,22 +19,24 @@ const FiltroSelector = () => {
   const [pais, setPais] = useState("");
   const [base, setBase] = useState("");
   const [tabla, setTabla] = useState("");
-  const [fechaDesde, setFechaDesde] = useState("");
-  const [fechaHasta, setFechaHasta] = useState("");
+  const [fechaDesde, setFechaDesde] = useState(dayjs());
+  const [fechaHasta, setFechaHasta] = useState(dayjs());
 
   const handleBaseChange = (event) => {
-    const selectedBase = event.target.value;
-    setBase(selectedBase);
+  const selectedBase = event.target.value;
+  setBase(selectedBase);
 
-    const anios = baseAniosDisponibles[selectedBase];
-    if (anios?.length) {
-      setFechaDesde(`01/01/${anios[0]}`);
-      setFechaHasta(`31/12/${anios[anios.length - 1]}`);
-    } else {
-      setFechaDesde("");
-      setFechaHasta("");
-    }
-  };
+  const anios = baseAniosDisponibles[selectedBase];
+  if (anios?.length) {
+    // Usamos dayjs con formato correcto (YYYY-MM-DD)
+    setFechaDesde(dayjs(`${anios[0]}-01-01`));
+    setFechaHasta(dayjs(`${anios[anios.length - 1]}-12-31`));
+  } else {
+    // En caso de que no tenga años definidos
+    setFechaDesde(dayjs());
+    setFechaHasta(dayjs());
+  }
+};
 
   return (
     <Box sx={{ p: 4 }}>
@@ -65,8 +71,22 @@ const FiltroSelector = () => {
       </FormControl>
 
       <Box display="flex" gap={2}>
-        <TextField fullWidth label="Fecha Desde" value={fechaDesde} disabled />
-        <TextField fullWidth label="Fecha Hasta" value={fechaHasta} disabled />
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+                label="Fecha Desde"
+                value={fechaDesde}
+                onChange={(newValue) => setFechaDesde(newValue)}
+                slotProps={{ textField: { fullWidth: true } }}
+            />
+            <DatePicker
+                label="Fecha Hasta"
+                value={fechaHasta}
+                onChange={(newValue) => setFechaHasta(newValue)}
+                slotProps={{ textField: { fullWidth: true } }}
+            />
+        </LocalizationProvider>
+
+
       </Box>
     </Box>
   );
