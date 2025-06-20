@@ -17,10 +17,10 @@ import LineWeightIcon from '@mui/icons-material/LineWeight';
 function AppHeader() {
   // Simulamos un usuario
   const user = {
-    name: 'Tatiana',
-    email: 'tatiana@example.com',
-    plan: 'Pro',
-    daysLeft: 12,
+    name: 'Example',
+    email: 'example@example.com',
+    plan: 'Plus',
+    daysLeft: 120,
     profile: 'Admin',
   };
 
