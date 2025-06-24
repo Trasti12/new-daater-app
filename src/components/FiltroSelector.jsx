@@ -15,31 +15,31 @@ const baseAniosDisponibles = {
   "DAATER PLUS 2025": [2025],
 };
 
-const FiltroSelector = () => {
-  const [pais, setPais] = useState("");
-  const [base, setBase] = useState("");
-  const [tabla, setTabla] = useState("");
-  const [fechaDesde, setFechaDesde] = useState(dayjs());
-  const [fechaHasta, setFechaHasta] = useState(dayjs());
-
+const FiltroSelector = ({ filtros, setFiltros }) => {
   const handleBaseChange = (event) => {
-  const selectedBase = event.target.value;
-  setBase(selectedBase);
+    const selectedBase = event.target.value;
 
-  const anios = baseAniosDisponibles[selectedBase];
-  if (anios?.length) {
-    // Usamos dayjs con formato correcto (YYYY-MM-DD)
-    setFechaDesde(dayjs(`${anios[0]}-01-01`));
-    setFechaHasta(dayjs(`${anios[anios.length - 1]}-12-31`));
-  } else {
-    // En caso de que no tenga años definidos
-    setFechaDesde(dayjs());
-    setFechaHasta(dayjs());
-  }
-};
+    const anios = baseAniosDisponibles[selectedBase];
+    if (anios?.length) {
+      setFiltros(prev => ({
+        ...prev,
+        base: selectedBase,
+        fechas: {
+          desde: dayjs(`${anios[0]}-01-01`),
+          hasta: dayjs(`${anios[anios.length - 1]}-12-31`)
+        }
+      }));
+    } else {
+      setFiltros(prev => ({
+        ...prev,
+        base: selectedBase,
+        fechas: { desde: dayjs(), hasta: dayjs() }
+      }));
+    }
+  };
 
   return (
-    <Box sx={{ 
+    <Box sx={{
       display: 'flex',
       flexWrap: 'wrap',
       gap: 2,
@@ -48,13 +48,14 @@ const FiltroSelector = () => {
       backgroundColor: '#f5f5f5',
       alignItems: 'center',
       justifyContent: 'center',
-     }}
-     >
-      
-
+    }}>
       <FormControl sx={{ width: 200 }}>
         <InputLabel>País</InputLabel>
-        <Select value={pais} label="País" onChange={(e) => setPais(e.target.value)}>
+        <Select
+          value={filtros.pais}
+          label="País"
+          onChange={(e) => setFiltros(prev => ({ ...prev, pais: e.target.value }))}
+        >
           <MenuItem value="Colombia">Colombia</MenuItem>
           <MenuItem value="Perú">Perú</MenuItem>
           <MenuItem value="Ecuador">Ecuador</MenuItem>
@@ -65,7 +66,11 @@ const FiltroSelector = () => {
 
       <FormControl sx={{ width: 200 }}>
         <InputLabel>Base</InputLabel>
-        <Select value={base} label="Base" onChange={handleBaseChange}>
+        <Select
+          value={filtros.base}
+          label="Base"
+          onChange={handleBaseChange}
+        >
           {Object.keys(baseAniosDisponibles).map((b) => (
             <MenuItem key={b} value={b}>{b}</MenuItem>
           ))}
@@ -74,7 +79,11 @@ const FiltroSelector = () => {
 
       <FormControl sx={{ width: 200 }}>
         <InputLabel>Tabla</InputLabel>
-        <Select value={tabla} label="Tabla" onChange={(e) => setTabla(e.target.value)}>
+        <Select
+          value={filtros.tabla}
+          label="Tabla"
+          onChange={(e) => setFiltros(prev => ({ ...prev, tabla: e.target.value }))}
+        >
           <MenuItem value="IMPO">IMPO</MenuItem>
           <MenuItem value="EXPO">EXPO</MenuItem>
         </Select>
@@ -82,21 +91,25 @@ const FiltroSelector = () => {
 
       <Box display="flex" gap={2}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-                label="Desde"
-                value={fechaDesde}
-                onChange={(newValue) => setFechaDesde(newValue)}
-                slotProps={{ textField: { fullWidth: true } }}
-            />
-            <DatePicker
-                label="Hasta"
-                value={fechaHasta}
-                onChange={(newValue) => setFechaHasta(newValue)}
-                slotProps={{ textField: { fullWidth: true } }}
-            />
+          <DatePicker
+            label="Desde"
+            value={filtros.fechas?.desde || null}
+            onChange={(newValue) => setFiltros(prev => ({
+              ...prev,
+              fechas: { ...prev.fechas, desde: newValue }
+            }))}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
+          <DatePicker
+            label="Hasta"
+            value={filtros.fechas?.hasta || null}
+            onChange={(newValue) => setFiltros(prev => ({
+              ...prev,
+              fechas: { ...prev.fechas, hasta: newValue }
+            }))}
+            slotProps={{ textField: { fullWidth: true } }}
+          />
         </LocalizationProvider>
-
-
       </Box>
     </Box>
   );
