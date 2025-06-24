@@ -39,10 +39,20 @@ const FiltroSelector = () => {
 };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h6" mb={2}>Filtros de búsqueda</Typography>
+    <Box sx={{ 
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: 2,
+      padding: 2,
+      marginTop: '64px',
+      backgroundColor: '#f5f5f5',
+      alignItems: 'center',
+      justifyContent: 'center',
+     }}
+     >
+      
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl sx={{ width: 200 }}>
         <InputLabel>País</InputLabel>
         <Select value={pais} label="País" onChange={(e) => setPais(e.target.value)}>
           <MenuItem value="Colombia">Colombia</MenuItem>
@@ -53,7 +63,7 @@ const FiltroSelector = () => {
         </Select>
       </FormControl>
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl sx={{ width: 200 }}>
         <InputLabel>Base</InputLabel>
         <Select value={base} label="Base" onChange={handleBaseChange}>
           {Object.keys(baseAniosDisponibles).map((b) => (
@@ -62,7 +72,7 @@ const FiltroSelector = () => {
         </Select>
       </FormControl>
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl sx={{ width: 200 }}>
         <InputLabel>Tabla</InputLabel>
         <Select value={tabla} label="Tabla" onChange={(e) => setTabla(e.target.value)}>
           <MenuItem value="IMPO">IMPO</MenuItem>
@@ -73,13 +83,13 @@ const FiltroSelector = () => {
       <Box display="flex" gap={2}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-                label="Fecha Desde"
+                label="Desde"
                 value={fechaDesde}
                 onChange={(newValue) => setFechaDesde(newValue)}
                 slotProps={{ textField: { fullWidth: true } }}
             />
             <DatePicker
-                label="Fecha Hasta"
+                label="Hasta"
                 value={fechaHasta}
                 onChange={(newValue) => setFechaHasta(newValue)}
                 slotProps={{ textField: { fullWidth: true } }}
